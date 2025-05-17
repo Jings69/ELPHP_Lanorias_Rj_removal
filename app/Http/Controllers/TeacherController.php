@@ -32,7 +32,7 @@ class TeacherController extends Controller
 
         $teacher = Teacher::create($fields);
 
-        return [ 'teacher' => $teacher];
+        return $teacher;
     }
 
     /**
@@ -40,7 +40,7 @@ class TeacherController extends Controller
      */
     public function show(Teacher $teacher)
     {
-        //
+        return $teacher;
     }
 
     /**
@@ -48,7 +48,18 @@ class TeacherController extends Controller
      */
     public function update(Request $request, Teacher $teacher)
     {
-        //
+        $fields = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:teachers',
+            'phone' => 'nullable|string|max:15',
+            'address' => 'nullable|string|max:255',
+            'subject' => 'nullable|string|max:255',
+            'salary' => 'nullable|numeric',
+        ]);
+
+        $teacher->update($fields);
+
+        return $teacher;
     }
 
     /**
@@ -56,6 +67,8 @@ class TeacherController extends Controller
      */
     public function destroy(Teacher $teacher)
     {
-        //
+        $teacher->delete();
+
+        return response()->json(['message' => 'Teacher information deleted successfully.'], 200);
     }
 }
