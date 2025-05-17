@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Teacher;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class TeacherController extends Controller
+class TeacherController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'show'])
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -30,7 +38,7 @@ class TeacherController extends Controller
             'salary' => 'nullable|numeric',
         ]);
 
-        $teacher = Teacher::create($fields);
+        $teacher = $request->user()->teachers()->create($fields);
 
         return $teacher;
     }

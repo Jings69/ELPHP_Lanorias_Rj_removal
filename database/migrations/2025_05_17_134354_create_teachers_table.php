@@ -1,11 +1,19 @@
 <?php
 
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class extends Migration implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'show']),
+        ];
+    }
     /**
      * Run the migrations.
      */
@@ -13,6 +21,7 @@ return new class extends Migration
     {
         Schema::create('teachers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone')->nullable();
