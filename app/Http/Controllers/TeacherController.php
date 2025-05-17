@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Teacher;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreTeacherRequest;
-use App\Http\Requests\UpdateTeacherRequest;
+use Illuminate\Http\Request;
 
 class TeacherController extends Controller
 {
@@ -14,15 +13,26 @@ class TeacherController extends Controller
      */
     public function index()
     {
-        //
+        return Teacher::all();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTeacherRequest $request)
+    public function store(Request $request)
     {
-        //
+        $fields = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:teachers',
+            'phone' => 'nullable|string|max:15',
+            'address' => 'nullable|string|max:255',
+            'subject' => 'nullable|string|max:255',
+            'salary' => 'nullable|numeric',
+        ]);
+
+        $teacher = Teacher::create($fields);
+
+        return [ 'teacher' => $teacher];
     }
 
     /**
@@ -36,7 +46,7 @@ class TeacherController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTeacherRequest $request, Teacher $teacher)
+    public function update(Request $request, Teacher $teacher)
     {
         //
     }
